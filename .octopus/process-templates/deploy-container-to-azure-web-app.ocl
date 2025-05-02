@@ -1,2 +1,33 @@
 name = "Deploy Container to Azure Web App"
 description = ""
+
+parameter "Package" {
+    display_settings = {
+        Octopus.ControlType = "Package"
+    }
+    help_text = "Provide the location of the package to deploy to the Azure Web App"
+    label = ""
+}
+
+step "deploy-an-azure-app-service" {
+    name = "Deploy an Azure App Service"
+
+    action {
+        action_type = "Octopus.AzureAppService"
+        properties = {
+            Octopus.Action.Azure.DeploymentSlot = "Staging"
+            Octopus.Action.Azure.DeploymentType = "Container"
+            Octopus.Action.EnabledFeatures = "Octopus.Features.JsonConfigurationVariables,Octopus.Features.ConfigurationTransforms,Octopus.Features.SubstituteInFiles"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool_variable = ""
+
+        packages {
+            acquisition_location = "NotAcquired"
+            properties = {
+                PackageParameterName = "Package"
+                SelectionMode = "deferred"
+            }
+        }
+    }
+}
