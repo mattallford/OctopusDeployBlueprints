@@ -28,7 +28,7 @@ step "deploy-an-azure-app-service" {
     action {
         action_type = "Octopus.AzureAppService"
         properties = {
-            Octopus.Action.Azure.DeploymentSlot = "Staging"
+            Octopus.Action.Azure.DeploymentSlot = "#{DeploymentSlotName}"
             Octopus.Action.Azure.DeploymentType = "Container"
             Octopus.Action.EnabledFeatures = "Octopus.Features.JsonConfigurationVariables,Octopus.Features.ConfigurationTransforms,Octopus.Features.SubstituteInFiles"
             OctopusUseBundledTooling = "False"
