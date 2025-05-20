@@ -9,12 +9,12 @@ parameter "Package" {
     label = "Package Label"
 }
 
-parameter "Azure App Service Name" {
+parameter "Template.Azure.Account" {
     display_settings = {
-        Octopus.ControlType = "SingleLineText"
+        Octopus.ControlType = "AzureAccount"
     }
-    help_text = "Provide the name of the target Azure App Service"
-    label = ""
+    help_text = "The Azure account used to perform the deployment and slot swap in Azure"
+    label = "Aure Account"
 
     value "" {}
 }
