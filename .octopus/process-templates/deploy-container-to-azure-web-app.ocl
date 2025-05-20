@@ -52,7 +52,7 @@ step "run-smoke-test-on-slot" {
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptBody = <<-EOT
                 # Perform the smoke test
-                $endpoint = "http://$($OctopusParameters["spec:rules:0:host"])"
+                $endpoint = $OctopusParameters["Azure.App.stagingUrl"]
                 Write-Host "Testing endpoint: $endpoint"
                 
                 try {
