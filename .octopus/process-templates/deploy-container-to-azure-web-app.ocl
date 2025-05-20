@@ -50,6 +50,10 @@ step "run-smoke-test-on-slot" {
         properties = {
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptBody = <<-EOT
+                # Wait before starting the smoke test
+                Write-Host "Waiting 30 seconds for the App Service slot to warm up..."
+                Start-Sleep -Seconds 30
+                
                 # Perform the smoke test
                 $endpoint = $OctopusParameters["Azure.App.stagingUrl"]
                 Write-Host "Testing endpoint: $endpoint"
