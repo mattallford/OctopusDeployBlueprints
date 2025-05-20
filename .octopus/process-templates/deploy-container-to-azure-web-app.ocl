@@ -9,13 +9,21 @@ parameter "Package" {
     label = "Package Label"
 }
 
+parameter "Azure.App.DeploymentSlotName" {
+    display_settings = {
+        Octopus.ControlType = "SingleLineText"
+    }
+    help_text = ""
+    label = "Azure App Service Deployment Slot name"
+}
+
 step "deploy-an-azure-app-service" {
     name = "Deploy to staging slot"
 
     action "deploy-to-staging-slot" {
         action_type = "Octopus.AzureAppService"
         properties = {
-            Octopus.Action.Azure.DeploymentSlot = "#{DeploymentSlotName}"
+            Octopus.Action.Azure.DeploymentSlot = "#{Azure.App.DeploymentSlotName}"
             Octopus.Action.Azure.DeploymentType = "Container"
             Octopus.Action.EnabledFeatures = "Octopus.Features.JsonConfigurationVariables,Octopus.Features.ConfigurationTransforms,Octopus.Features.SubstituteInFiles"
             OctopusUseBundledTooling = "False"
