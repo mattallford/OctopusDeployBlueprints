@@ -9,6 +9,16 @@ parameter "Package" {
     label = "Package Label"
 }
 
+parameter "Azure App Service Name" {
+    display_settings = {
+        Octopus.ControlType = "SingleLineText"
+    }
+    help_text = "Provide the name of the target Azure App Service"
+    label = ""
+
+    value "" {}
+}
+
 step "deploy-an-azure-app-service" {
     name = "Deploy to staging slot"
 
@@ -31,5 +41,39 @@ step "deploy-an-azure-app-service" {
                 SelectionMode = "deferred"
             }
         }
+    }
+}
+
+step "run-smoke-test-on-slot" {
+    name = "Run Smoke Test on Slot"
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                # Perform the smoke test
+                $endpoint = "http://$($OctopusParameters["spec:rules:0:host"])"
+                Write-Host "Testing endpoint: $endpoint"
+                
+                try {
+                    $response = Invoke-WebRequest -Uri $endpoint -UseBasicParsing -TimeoutSec 10
+                    if ($response.StatusCode -eq 200) {
+                        Write-Host "Smoke test passed: Application is responding as expected."
+                        exit 0
+                    } else {
+                        Write-Host "Smoke test failed: Received status code $($response.StatusCode)."
+                        exit 1
+                    }
+                } catch {
+                    Write-Host "Smoke test failed: Unable to reach the endpoint. Error: $_"
+                    exit 1
+                }
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool_variable = ""
     }
 }
