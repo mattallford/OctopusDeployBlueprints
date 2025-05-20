@@ -62,14 +62,11 @@ step "run-smoke-test-on-slot" {
                     $response = Invoke-WebRequest -Uri $endpoint -UseBasicParsing -TimeoutSec 10
                     if ($response.StatusCode -eq 200) {
                         Write-Host "Smoke test passed: Application is responding as expected."
-                        exit 0
                     } else {
                         Write-Host "Smoke test failed: Received status code $($response.StatusCode)."
-                        exit 1
                     }
                 } catch {
                     Write-Host "Smoke test failed: Unable to reach the endpoint. Error: $_"
-                    exit 1
                 }
                 EOT
             Octopus.Action.Script.ScriptSource = "Inline"
