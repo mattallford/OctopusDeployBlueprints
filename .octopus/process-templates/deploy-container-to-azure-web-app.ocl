@@ -9,16 +9,6 @@ parameter "Package" {
     label = "Package Label"
 }
 
-parameter "Template.Azure.Account" {
-    display_settings = {
-        Octopus.ControlType = "AzureAccount"
-    }
-    help_text = "The Azure account used to perform the deployment and slot swap in Azure"
-    label = "Aure Account"
-
-    value "" {}
-}
-
 step "deploy-an-azure-app-service" {
     name = "Deploy to staging slot"
 
