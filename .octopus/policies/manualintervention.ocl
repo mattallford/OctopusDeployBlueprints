@@ -1,0 +1,38 @@
+name = "Require Manual Intervention step"
+description = "Require Manual Intervention step"
+ViolationReason = "Manual intervention step is required to deploy"
+
+scope {
+	rego = <<-EOT
+		package manualintervention
+
+		default evaluate := false
+
+		evaluate := true if startswith(input.Space.Name, "Policies")
+	EOT
+}
+
+conditions {
+	rego = <<-EOT
+		package manualintervention
+
+        default result := {"allowed": false }
+
+        result := {"allowed": true} if {
+	        some step in input.Steps
+	        step.ActionType == "Octopus.Manual"
+	        not manual_intervention_skipped
+        }
+
+        result := {"allowed": false, "Reason": "Manual intervention step cannot be skipped"} if {
+	        manual_intervention_skipped
+        }
+
+        manual_intervention_skipped if {
+	        some step in input.Steps
+	        step.Id in input.SkippedSteps
+	        step.ActionType == "Octopus.Manual"
+        }
+
+    EOT
+}
