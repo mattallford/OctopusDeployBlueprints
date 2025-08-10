@@ -1,41 +1,12 @@
-name = "Require Manual Intervention step"
-description = "Require Manual Intervention step"
-ViolationReason = "Manual intervention step is required in production environment"
+name = "Debug Project Properties"
+description = "Debug to see available project properties"
+ViolationReason = "Debug policy"
 content = <<-EOT
-package manualintervention
+package debug
 
-default result := {"allowed": false }
+# Always block but show what's available
+default result := {"allowed": false, "Reason": sprintf("Debug - Project data: %v", [input.Project])}
 
-result := {"allowed": true} if {
-	is_target_project
-	is_production
-	some step in input.Steps
-	step.ActionType == "Octopus.Manual"
-	not manual_intervention_skipped
-}
-
-result := {"allowed": false, "Reason": "Manual intervention step cannot be skipped in production environment"} if {
-	is_target_project
-	is_production
-	manual_intervention_skipped
-}
-
-manual_intervention_skipped if {
-	some step in input.Steps
-	step.Id in input.SkippedSteps
-	step.ActionType == "Octopus.Manual"
-}
-
-result := {"allowed": true} if not is_target_project
-result := {"allowed": true} if not is_production
-
-is_production if {
-	some env in data.Environments
-	env.Slug == "production"
-	input.EnvironmentId == env.Id
-}
-
-is_target_project if {
-	input.Project.Slug == "live-status"
-}
+# If input.Project doesn't exist, try this:
+# default result := {"allowed": false, "Reason": sprintf("Debug - Full input: %v", [input])}
 EOT
