@@ -4,9 +4,7 @@ ViolationReason = "Debug policy"
 content = <<-EOT
 package manualintervention
 
-# Always block but show what's available
-default result := {"allowed": false, "Reason": sprintf("Debug - Project data: %v", [input.Project])}
+default result := {"allowed": false}
 
-# If input.Project doesn't exist, try this:
-# default result := {"allowed": false, "Reason": sprintf("Debug - Full input: %v", [input])}
+result := {"allowed": false, "Reason": sprintf("Available input keys: %v", [object.keys(input)])} if true
 EOT
