@@ -7,6 +7,7 @@ package manualintervention
 default result := {"allowed": false }
 
 result := {"allowed": true} if {
+	is_target_project
 	is_production
 	some step in input.Steps
 	step.ActionType == "Octopus.Manual"
@@ -14,6 +15,7 @@ result := {"allowed": true} if {
 }
 
 result := {"allowed": false, "Reason": "Manual intervention step cannot be skipped in production environment"} if {
+	is_target_project
 	is_production
 	manual_intervention_skipped
 }
@@ -24,11 +26,16 @@ manual_intervention_skipped if {
 	step.ActionType == "Octopus.Manual"
 }
 
+result := {"allowed": true} if not is_target_project
 result := {"allowed": true} if not is_production
 
 is_production if {
 	some env in data.Environments
 	env.Slug == "production"
 	input.EnvironmentId == env.Id
+}
+
+is_target_project if {
+	input.Project.Slug == "your-project-slug"
 }
 EOT
