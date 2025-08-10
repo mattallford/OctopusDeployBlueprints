@@ -6,5 +6,5 @@ package manualintervention
 
 default result := {"allowed": false}
 
-result := {"allowed": false, "Reason": sprintf("Environment data: %v", [data.Environments[0]])} if count(data.Environments) > 0
+result := {"allowed": false, "Reason": sprintf("Current EnvironmentId: %v, Available environments: %v", [input.EnvironmentId, data.Environments])} if true
 EOT
