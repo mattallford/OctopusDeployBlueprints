@@ -6,5 +6,6 @@ package manualintervention
 
 default result := {"allowed": false}
 
-result := {"allowed": false, "Reason": sprintf("Full input object: %v", [input])} if true
+# This might error if these don't exist, but worth trying
+result := {"allowed": false, "Reason": sprintf("Available: input=%v, data=%v", [object.keys(input), object.keys(data)])} if true
 EOT
