@@ -36,6 +36,6 @@ is_production if {
 }
 
 is_target_project if {
-	input.Project.Slug == "your-project-slug"
+	input.Project.Slug == "live-status"
 }
 EOT
