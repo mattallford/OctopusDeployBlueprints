@@ -6,7 +6,5 @@ package manualintervention
 
 default result := {"allowed": false}
 
-result := {"allowed": false, "Reason": sprintf("First step data: %v", [input.Steps[0]])} if count(input.Steps) > 0
-
-result := {"allowed": false, "Reason": "No steps found"} if count(input.Steps) == 0
+result := {"allowed": false, "Reason": sprintf("Environment data: %v", [data.Environments[0]])} if count(data.Environments) > 0
 EOT
