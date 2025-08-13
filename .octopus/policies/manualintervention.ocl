@@ -1,34 +1,38 @@
 name = "Require Manual Intervention step"
 description = "Require Manual Intervention step"
-ViolationReason = "Manual intervention step is required in production environment"
-content = <<-EOT
-package manualintervention
+ViolationReason = "Manual intervention step is required to deploy"
 
-default result := {"allowed": false }
+scope {
+	rego = <<-EOT
+		package manualintervention
 
-result := {"allowed": true} if {
-	is_production
-	some step in input.Steps
-	step.ActionType == "Octopus.Manual"
-	not manual_intervention_skipped
+		default evaluate := false
+
+		evaluate := true if startswith(input.Space.Name, "Policies")
+	EOT
 }
 
-result := {"allowed": false, "Reason": "Manual intervention step cannot be skipped in production environment"} if {
-	is_production
-	manual_intervention_skipped
-}
+conditions {
+	rego = <<-EOT
+		package manualintervention
 
-manual_intervention_skipped if {
-	some step in input.Steps
-	step.Id in input.SkippedSteps
-	step.ActionType == "Octopus.Manual"
-}
+        default result := {"allowed": false }
 
-result := {"allowed": true} if not is_production
+        result := {"allowed": true} if {
+	        some step in input.Steps
+	        step.ActionType == "Octopus.Manual"
+	        not manual_intervention_skipped
+        }
 
-is_production if {
-	some env in data.Environments
-	env.Slug == "production"
-	input.EnvironmentId == env.Id
+        result := {"allowed": false, "Reason": "Manual intervention step cannot be skipped"} if {
+	        manual_intervention_skipped
+        }
+
+        manual_intervention_skipped if {
+	        some step in input.Steps
+	        step.Id in input.SkippedSteps
+	        step.ActionType == "Octopus.Manual"
+        }
+
+    EOT
 }
-EOT
