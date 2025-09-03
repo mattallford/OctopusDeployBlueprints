@@ -1,0 +1,35 @@
+name = "Log deployment to Seq"
+description = "Require logging of deployment events to Seq"
+ViolationReason = "Deployment events must be logged"
+
+scope {
+	rego = <<-EOT
+		package loggingneeded
+
+		default evaluate := false
+
+		evaluate := true if { 
+			startswith(input.Space.Name, "Policies")
+			input.Project.Name == "Reporting Database"
+		}
+	EOT
+}
+
+conditions {
+	rego = <<-EOT
+		package loggingneeded
+
+        default result := {"allowed": false }
+
+        # Minimum required version
+        min_version := "22"
+
+        result := {"allowed": true} if {
+			some step in input.Steps
+			step.Source.Type == "Step Template"
+			step.Source.SlugOrId == "ActionTemplates-1"
+			step.Source.Version >= min_version
+        }
+
+	EOT
+}
