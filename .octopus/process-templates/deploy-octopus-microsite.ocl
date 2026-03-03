@@ -1,0 +1,2 @@
+name = "Deploy Octopus Microsite"
+description = "This process template deploys an Octopus Deploy Microsite, based on the Astro framework, to an Azure Storage Account"
