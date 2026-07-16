@@ -9,7 +9,7 @@ conditions {
                   default result := {"allowed": false }
             
                   result := {"allowed": true} if {
-                   some step in input.FakeProperty
+                   some step in input.Steps
                    step.ActionType == "Octopus.Manual"
                    not manual_intervention_skipped
                   }
@@ -19,7 +19,7 @@ conditions {
                   }
             
                   manual_intervention_skipped if {
-                   some step in input.Steps
+                   some step in input.FakeProperty
                    step.Id in input.SkippedSteps
                    step.ActionType == "Octopus.Manual"
                   }
