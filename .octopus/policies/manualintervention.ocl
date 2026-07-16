@@ -33,6 +33,6 @@ scope {
             
             	default evaluate := false
             
-            	evaluate := true if startswith(input.ThisDoesNotExist.Nope, "Default")
+            	evaluate := true if startswith(input.Space.Name, "Default")
             EOT
 }
