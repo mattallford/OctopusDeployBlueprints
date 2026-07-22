@@ -1,6 +1,6 @@
 name = "Verify package from main"
 description = "Check that a package is from a specified branch"
-violation_action = "block"
+violation_action = "warn"
 violation_reason = "A package is from an unapproved branch"
 
 conditions {
@@ -26,7 +26,7 @@ conditions {
             	some pkg in all_packages
             
             	# Check if the Package-GitRef differs from the required baseline
-            	pkg.GitRef != "<Package-GitRef>"
+            	pkg.GitRef != "main"
             }
             EOT
 }
@@ -35,16 +35,10 @@ scope {
     rego = <<-EOT
             package verify_package_from_main
             
-            default evaluate := true
+            default evaluate := false
             
-            # The following are examples of available scoping options:
-            # evaluate if {    
-            	# Scope evaluation by Environment name    
-            	# input.Environment.Name == "<environment-name>"    
-            	# Scope evaluation to Space Id    
-            	# input.Space.Id == "<space-id>"
-            	# Scope evaluation to multiple Spaces
-                # input.Project.Slug in ["<project-slug>", "<project-slug2>"]
-            # }
+            evaluate if {       
+            	input.Environment.Name == "Production"
+            }
             EOT
 }
