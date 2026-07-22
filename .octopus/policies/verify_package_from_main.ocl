@@ -1,6 +1,6 @@
 name = "Verify package from main"
 description = "Check that a package is from a specified branch"
-violation_action = "warn"
+violation_action = "block"
 violation_reason = "A package is from an unapproved branch"
 
 conditions {
